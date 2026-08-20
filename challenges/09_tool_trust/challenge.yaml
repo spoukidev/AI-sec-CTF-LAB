@@ -1,0 +1,12 @@
+id: tool-trust-failure
+name: The Helpful Agent
+category: Agent Security
+difficulty: Medium
+points: 400
+description: An agent follows instructions inside a synthetic note and invokes an over-privileged safe tool.
+objective: Trigger a simulated read of restricted note 99.
+flag: AICTF{agent_trust_failure}
+hints: ["Tool output is data, not authority.", "The quarterly plan references another note.", "Ask the agent to follow note 7 or read the quarterly plan."]
+learning_objectives: [Tool authorization, Agent trust boundaries, Untrusted tool output]
+ports: [8000]
+docker_service: backend

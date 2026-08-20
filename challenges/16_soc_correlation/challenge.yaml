@@ -1,0 +1,12 @@
+id: soc-incident-correlation
+name: The Wrong Incident
+category: AI SOC Security
+difficulty: Hard
+points: 600
+description: A simplistic correlator merges alerts sharing a source IP within a short window.
+objective: Show two unrelated synthetic events being grouped into one incident.
+flag: AICTF{correlation_needs_context}
+hints: ["Shared infrastructure does not imply shared intent.", "Keep the source IP equal but vary another contextual field.", "Submit two alerts with one source_ip and different assets or techniques."]
+learning_objectives: [Alert correlation, Contextual evidence, False positives]
+ports: [8000]
+docker_service: backend

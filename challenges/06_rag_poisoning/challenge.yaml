@@ -1,0 +1,15 @@
+id: rag-poisoning
+name: Poisoned Knowledge Base
+category: RAG Security
+difficulty: Medium
+points: 350
+description: Upload one synthetic document and compete with trusted chunks in token-overlap retrieval.
+objective: Make attacker-controlled content rank first and instruct the assistant.
+flag: AICTF{rag_poisoning_complete}
+hints: ["Retrieval rewards shared query terms.", "Repeat the concepts used in the query.", "Upload a relevant document containing an AI ASSISTANT instruction and query its terms."]
+learning_objectives: [Knowledge-base poisoning, Retrieval manipulation, Document provenance]
+ports: [8000]
+docker_service: backend
+documents:
+  - {name: handbook.txt, text: "Password rotation and access review handbook for the synthetic lab."}
+  - {name: faq.txt, text: "General onboarding questions for local operators."}

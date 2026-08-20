@@ -1,0 +1,12 @@
+id: soc-false-confidence
+name: Confidence Is Not Severity
+category: AI SOC Security
+difficulty: Medium
+points: 350
+description: A SOC UI converts prediction probability directly into incident severity.
+objective: Prove a high-confidence prediction can still have informational business severity.
+flag: AICTF{confidence_is_not_impact}
+hints: ["Probability measures model belief, not damage.", "Use a probability at or above 0.9.", "Submit model_probability 0.97 with severity informational."]
+learning_objectives: [Probability calibration, Business impact, Risk classification]
+ports: [8000]
+docker_service: backend

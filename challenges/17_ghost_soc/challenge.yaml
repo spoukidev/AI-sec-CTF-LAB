@@ -1,0 +1,12 @@
+id: ghost-in-the-soc
+name: Ghost in the SOC
+category: AI SOC / LLM Security
+difficulty: Expert
+points: 1000
+description: Chain retrieval injection, AI triage influence, and a simulated privileged tool request.
+objective: Cross three synthetic trust boundaries to open a restricted local case.
+flag: AICTF{ghost_in_the_soc}
+hints: ["Trace authority at every arrow in the pipeline.", "A retrieved document can address the AI analyst.", "Provide a document containing AI ASSISTANT, mention triage, and request open_restricted_case."]
+learning_objectives: [Chained trust failures, RAG security, Agent authorization, SOC AI validation]
+ports: [8000]
+docker_service: backend

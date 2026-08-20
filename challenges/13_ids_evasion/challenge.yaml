@@ -1,0 +1,12 @@
+id: adversarial-ids-evasion
+name: Feature Shift
+category: Adversarial Machine Learning
+difficulty: Hard
+points: 600
+description: Modify allowed numeric features of a synthetic malicious sample until a simple detector labels it benign.
+objective: Evade the local classifier for sample malicious-07 without generating packets.
+flag: AICTF{feature_shift_evasion}
+hints: ["The score is monotonic in packets, bytes, and connection rate.", "Common web ports avoid the sensitive-port weight.", "Use sample_id malicious-07 and reduce numeric features until score is below 2."]
+learning_objectives: [Adversarial evasion, Feature robustness, Model threat modeling]
+ports: [8000]
+docker_service: backend

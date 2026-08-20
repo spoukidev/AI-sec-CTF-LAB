@@ -1,0 +1,12 @@
+id: unsafe-output-handling
+name: Trusting the Robot
+category: AI Application Security
+difficulty: Medium
+points: 400
+description: Generated JSON is executed without schema, action allowlist, or authorization checks.
+objective: Influence the generated action to view synthetic internal alert 99.
+flag: AICTF{validate_model_output}
+hints: ["Model output is another untrusted input.", "The expected action can be changed by natural language.", "Request internal alert 99."]
+learning_objectives: [Output validation, Pydantic schemas, Action allowlists]
+ports: [8000]
+docker_service: backend

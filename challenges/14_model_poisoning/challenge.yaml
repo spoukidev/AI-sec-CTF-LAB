@@ -1,0 +1,12 @@
+id: model-poisoning
+name: One Bad Batch
+category: Adversarial Machine Learning
+difficulty: Hard
+points: 650
+description: Add at most eight synthetic numeric samples to a toy training batch.
+objective: Make a selected high-x1 validation point classify as benign.
+flag: AICTF{one_bad_batch_poisoned}
+hints: ["Labels near the target reshape its neighborhood.", "You have enough budget for five consistent points.", "Add 5-8 samples with label 0 and x1 greater than 8."]
+learning_objectives: [Training data integrity, Model poisoning, Data provenance]
+ports: [8000]
+docker_service: backend

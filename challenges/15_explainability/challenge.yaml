@@ -1,0 +1,12 @@
+id: explainability-manipulation
+name: SHAP Happens
+category: Explainable AI
+difficulty: Hard
+points: 600
+description: Keep a synthetic prediction malicious while changing the largest feature contribution.
+objective: Demonstrate explanation instability under permitted feature movement.
+flag: AICTF{explanations_are_not_invariants}
+hints: ["The label uses the sum; the explanation uses the larger component.", "Keep risk plus rate at least 10.", "Set baseline_top to risk, then make rate larger than risk while preserving the sum."]
+learning_objectives: [Explanation stability, Interpretation limits, Prediction invariance]
+ports: [8000]
+docker_service: backend

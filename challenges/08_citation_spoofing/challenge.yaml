@@ -1,0 +1,14 @@
+id: citation-spoofing
+name: Citation Mirage
+category: RAG Security
+difficulty: Hard
+points: 500
+description: Citation labels come from filenames rather than immutable provenance.
+objective: Upload a misleadingly named source and make it appear authoritative.
+flag: AICTF{filenames_are_not_provenance}
+hints: ["A filename is user-controlled presentation data.", "Names that imply authority change the citation appearance.", "Upload official_security_policy.txt with an assistant override and query its distinctive terms."]
+learning_objectives: [Citation spoofing, Provenance metadata, UI trust signals]
+ports: [8000]
+docker_service: backend
+documents:
+  - {name: verified_policy.txt, text: "Verified policy requires normal review and approval."}

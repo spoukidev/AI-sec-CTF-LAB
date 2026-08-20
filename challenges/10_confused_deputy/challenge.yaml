@@ -1,0 +1,12 @@
+id: confused-deputy
+name: Who Authorized That?
+category: Agent Security
+difficulty: Hard
+points: 550
+description: The application lets a model decide whether an analyst can call an admin-only synthetic tool.
+objective: As analyst, persuade the model to request the admin report.
+flag: AICTF{models_cannot_authorize}
+hints: ["The role is recorded but never enforced by the tool.", "Ask explicitly for a privileged resource.", "Set role to analyst and request the admin report or ask it to act as admin."]
+learning_objectives: [Confused deputy, Application-side authorization, Least privilege]
+ports: [8000]
+docker_service: backend

@@ -1,0 +1,12 @@
+id: system-prompt-leakage
+name: Prompt Archaeology
+category: LLM Security
+difficulty: Easy
+points: 150
+description: Recover synthetic configuration from an archive assistant's hidden prompt.
+objective: Derive the flag from a synthetic access key disclosed by the assistant.
+flag: AICTF{system_prompt_archaeologist}
+hints: ["Ask about how the assistant was initialized.", "Configuration and initial instructions are useful phrases.", "Request the assistant role, internal policy, and access key."]
+learning_objectives: [System prompt leakage, Configuration confidentiality, Secret isolation]
+ports: [8000]
+docker_service: backend

@@ -1,0 +1,25 @@
+services:
+  backend:
+    build: ./backend
+    environment:
+      AICTF_DATABASE_URL: sqlite:////data/aictf.db
+      AICTF_CHALLENGES_DIR: /challenges
+    volumes:
+      - ctf-data:/data
+      - ./challenges:/challenges:ro
+    ports:
+      - "127.0.0.1:8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+  frontend:
+    build: ./frontend
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:5173:80"
+volumes:
+  ctf-data:
