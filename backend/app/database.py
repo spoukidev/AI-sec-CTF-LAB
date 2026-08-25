@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import DateTime, Integer, String, create_engine
+from sqlalchemy import DateTime, Integer, String, UniqueConstraint, create_engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
 from .config import DATABASE_URL
 
@@ -8,6 +8,10 @@ class Base(DeclarativeBase):
 
 class Solve(Base):
     __tablename__ = "solves"
+    __table_args__ = (
+        UniqueConstraint("player", "challenge_id", name="uq_solve_player_challenge"),
+    )
+
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     player: Mapped[str] = mapped_column(String(40), index=True)
     challenge_id: Mapped[str] = mapped_column(String(80), index=True)

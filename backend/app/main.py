@@ -44,11 +44,25 @@ def submit(challenge_id: str, submission: Submission):
         raise HTTPException(404, "Challenge not found")
     if submission.flag.strip() != item["flag"]:
         return {"correct": False, "message": "That flag is not correct."}
+
     with SessionLocal() as db:
-        exists = db.scalar(select(Solve).where(Solve.player == submission.player, Solve.challenge_id == challenge_id))
-        if not exists:
-            db.add(Solve(player=submission.player, challenge_id=challenge_id))
+        db.add(Solve(player=submission.player, challenge_id=challenge_id))
+        try:
             db.commit()
+        except IntegrityError:
+            # A database-level uniqueness constraint makes duplicate submissions
+            # race-safe. Only suppress the error when the solve already exists;
+            # unexpected integrity failures must still surface.
+            db.rollback()
+            duplicate = db.scalar(
+                select(Solve.id).where(
+                    Solve.player == submission.player,
+                    Solve.challenge_id == challenge_id,
+                )
+            )
+            if duplicate is None:
+                raise
+
     return {"correct": True, "message": "Challenge solved!"}
 
 @app.get("/api/profile/{player}")

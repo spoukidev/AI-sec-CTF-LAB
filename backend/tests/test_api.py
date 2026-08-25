@@ -1,6 +1,9 @@
 import os
 os.environ["AICTF_DATABASE_URL"] = "sqlite:///:memory:"
+import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy.exc import IntegrityError
+from app.database import SessionLocal, Solve
 from app.main import app
 
 
@@ -80,6 +83,19 @@ def test_flag_validation_is_server_side():
     with TestClient(app) as client:
         bad = client.post("/api/challenges/prompt-injection-101/submit", json={"player": "tester", "flag": "AICTF{wrong}"})
         assert bad.json()["correct"] is False
+
+
+def test_solve_uniqueness_is_enforced_by_database():
+    with TestClient(app):
+        with SessionLocal() as db:
+            db.add(Solve(player="db-uniqueness-test", challenge_id="prompt-injection-101"))
+            db.commit()
+
+        with SessionLocal() as db:
+            db.add(Solve(player="db-uniqueness-test", challenge_id="prompt-injection-101"))
+            with pytest.raises(IntegrityError):
+                db.commit()
+            db.rollback()
 
 
 def test_duplicate_valid_submission_is_idempotent():
