@@ -85,6 +85,26 @@ def test_flag_validation_is_server_side():
         assert bad.json()["correct"] is False
 
 
+def test_submission_normalizes_player_names_and_rejects_blank_identity():
+    with TestClient(app) as client:
+        blank = client.post(
+            "/api/challenges/prompt-injection-101/submit",
+            json={"player": "   ", "flag": "AICTF{wrong}"},
+        )
+        normalized = client.post(
+            "/api/challenges/prompt-injection-101/submit",
+            json={"player": "  alice  ", "flag": "AICTF{wrong}"},
+        )
+
+        assert blank.status_code == 422
+        assert normalized.status_code == 200
+
+        # Validation occurs before flag checking, and normalized identities are
+        # used consistently by the submission model.
+        from app.schemas import Submission
+        assert Submission(player="  alice  ", flag="x").player == "alice"
+
+
 def test_solve_uniqueness_is_enforced_by_database():
     with TestClient(app):
         with SessionLocal() as db:
