@@ -27,7 +27,6 @@ def _tokens(text: str) -> set[str]:
 class ChallengeEngine:
     def __init__(self) -> None:
         self.llm = MockLLMProvider()
-        self.uploads: dict[str, list[dict[str, str]]] = {}
 
     @staticmethod
     def _prompt_archaeology(message: str) -> dict[str, Any]:
@@ -81,9 +80,12 @@ class ChallengeEngine:
             context = challenge.get("fixture", "")
             return {"response": self.llm.generate("Summarize documents only.", message, context), "source": "local_fixture"}
         if challenge_id in {"rag-poisoning", "rag-source-confusion", "citation-spoofing"}:
+            # Uploaded documents are request-scoped. Persisting them on the shared
+            # engine would let one player's poisoned corpus affect later runs and
+            # make challenge outcomes dependent on process history.
+            docs = list(challenge.get("documents", []))
             if payload.get("document"):
-                self.uploads.setdefault(challenge_id, []).append({"name": str(payload.get("filename", "upload.txt")), "text": str(payload["document"])})
-            docs = list(challenge.get("documents", [])) + self.uploads.get(challenge_id, [])
+                docs.append({"name": str(payload.get("filename", "upload.txt")), "text": str(payload["document"])})
             query = _tokens(message)
             ranked = sorted(docs, key=lambda d: len(query & _tokens(d["text"])), reverse=True)
             top = ranked[0] if ranked else {"name": "none", "text": ""}
