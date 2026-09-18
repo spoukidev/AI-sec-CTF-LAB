@@ -169,3 +169,14 @@ def test_rag_uploads_do_not_leak_across_requests():
         assert "AICTF{" in poisoned["response"]
         assert clean["retrieved"] != "poison.txt"
         assert "AICTF{" not in clean["response"]
+
+
+def test_malformed_numeric_challenge_input_returns_client_error():
+    with TestClient(app) as client:
+        response = client.post(
+            "/api/challenges/adversarial-ids/run",
+            json={"payload": {"packet_size": "not-a-number"}},
+        )
+
+        assert response.status_code == 422
+        assert response.json()["detail"] == "Challenge payload contains invalid values"
