@@ -73,6 +73,9 @@ def submit(challenge_id: str, submission: Submission):
 
 @app.get("/api/profile/{player}")
 def profile(player: str):
+    player = player.strip()
+    if not player:
+        raise HTTPException(422, "Player must contain non-whitespace characters")
     with SessionLocal() as db:
         ids = list(db.scalars(select(Solve.challenge_id).where(Solve.player == player)))
     points = sum(load_challenges()[item]["points"] for item in ids if item in load_challenges())
