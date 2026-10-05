@@ -14,7 +14,12 @@ async def lifespan(_: FastAPI):
     yield
 
 app = FastAPI(title="AI Security CTF Lab", version="1.0.0", lifespan=lifespan)
-app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"], allow_methods=["*"], allow_headers=["*"])
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_methods=["GET", "POST"],
+    allow_headers=["*"],
+)
 
 @app.get("/api/health")
 def health():
