@@ -1,5 +1,7 @@
 # AI Security CTF Lab
 
+[![Backend tests](https://github.com/spoukidev/AI-sec-CTF-LAB/actions/workflows/backend-tests.yml/badge.svg)](https://github.com/spoukidev/AI-sec-CTF-LAB/actions/workflows/backend-tests.yml) [![Frontend](https://github.com/spoukidev/AI-sec-CTF-LAB/actions/workflows/frontend.yml/badge.svg)](https://github.com/spoukidev/AI-sec-CTF-LAB/actions/workflows/frontend.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 A local-only, deliberately vulnerable training platform for prompt injection, RAG, agent security, adversarial ML, explainability, and AI SOC failure modes.
 
 ## Quick start
