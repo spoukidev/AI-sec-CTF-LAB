@@ -3,7 +3,7 @@ name: Backend tests
 on:
   push:
     branches:
-      - codex/ai-security-ctf-platform
+      - main
     paths:
       - "backend/**"
       - ".github/workflows/backend-tests.yml"
