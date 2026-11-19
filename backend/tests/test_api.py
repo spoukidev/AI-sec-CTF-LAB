@@ -202,3 +202,21 @@ def test_malformed_numeric_challenge_input_returns_client_error():
 
         assert response.status_code == 422
         assert response.json()["detail"] == "Challenge payload contains invalid values"
+
+
+@pytest.mark.parametrize(
+    ("challenge_id", "payload"),
+    [
+        ("adversarial-ids-evasion", {"features": ["packets", 1]}),
+        ("model-poisoning", {"samples": ["not-an-object"]}),
+        ("model-poisoning", {"samples": "abc"}),
+        ("explainability-manipulation", {"features": "risk=10"}),
+        ("soc-incident-correlation", {"alerts": [1, 2]}),
+    ],
+)
+def test_wrongly_shaped_challenge_input_returns_client_error(challenge_id, payload):
+    with TestClient(app, raise_server_exceptions=False) as client:
+        response = client.post(f"/api/challenges/{challenge_id}/run", json={"payload": payload})
+
+        assert response.status_code == 422
+        assert response.json()["detail"] == "Challenge payload contains invalid values"

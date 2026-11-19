@@ -42,10 +42,11 @@ def run_challenge(challenge_id: str, request: ChallengeRequest):
         raise HTTPException(404, "Challenge not found")
     try:
         return engine.run(challenge_id, request.payload)
-    except (TypeError, ValueError, OverflowError) as exc:
+    except (AttributeError, TypeError, ValueError, OverflowError) as exc:
         # Several simulation challenges intentionally accept flexible JSON and
-        # convert numeric fields inside the engine. Malformed player input must
-        # be a client error rather than an unhandled 500 response.
+        # convert numeric fields inside the engine. Malformed player input
+        # (bad numbers, or a list/string where an object is expected) must be
+        # a client error rather than an unhandled 500 response.
         raise HTTPException(422, "Challenge payload contains invalid values") from exc
 
 @app.post("/api/challenges/{challenge_id}/submit")
