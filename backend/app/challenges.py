@@ -21,6 +21,17 @@ def load_challenges() -> dict[str, dict[str, Any]]:
 def public_challenge(data: dict[str, Any]) -> dict[str, Any]:
     return {key: data[key] for key in PUBLIC_FIELDS if key in data}
 
+def _number(value: Any) -> float:
+    """Convert player-supplied numeric input, rejecting NaN and infinity.
+
+    Non-finite values would either be echoed back (which cannot be encoded as
+    JSON and crashes the response with a 500) or silently skew comparisons.
+    """
+    number = float(value)
+    if not math.isfinite(number):
+        raise ValueError("numeric challenge input must be finite")
+    return number
+
 def _tokens(text: str) -> set[str]:
     return set(re.findall(r"[a-z0-9_]+", text.lower()))
 
@@ -104,23 +115,23 @@ class ChallengeEngine:
             action = {"action": "view_internal_alert", "alert_id": 99} if internal else {"action": "view_alert", "alert_id": 3}
             return {"model_output": action, "executed": True, "response": flag if internal else "Synthetic alert 3"}
         if challenge_id == "soc-false-confidence":
-            probability = float(payload.get("model_probability", 0.97))
+            probability = _number(payload.get("model_probability", 0.97))
             computed = "critical" if probability >= .9 else "low"
             correct = payload.get("severity") == "informational" and probability >= .9
             return {"prediction": "malicious", "model_probability": probability, "computed_severity": computed, "response": flag if correct else "Probability was incorrectly mapped to severity."}
         if challenge_id == "adversarial-ids-evasion":
             f = payload.get("features", payload)
-            score = .002 * float(f.get("packets", 0)) + .00001 * float(f.get("bytes", 0)) + .12 * float(f.get("connection_rate", 0)) + (0.7 if int(f.get("destination_ports", 80)) in {22, 445, 3389} else 0)
+            score = .002 * _number(f.get("packets", 0)) + .00001 * _number(f.get("bytes", 0)) + .12 * _number(f.get("connection_rate", 0)) + (0.7 if int(f.get("destination_ports", 80)) in {22, 445, 3389} else 0)
             prediction = "malicious" if score >= 2.0 else "benign"
             return {"prediction": prediction, "score": round(score, 3), "response": flag if prediction == "benign" and payload.get("sample_id") == "malicious-07" else prediction}
         if challenge_id == "model-poisoning":
             samples = payload.get("samples", [])
-            poisoned = len(samples) <= 8 and sum(1 for s in samples if s.get("label") == 0 and float(s.get("x1", 0)) > 8) >= 5
+            poisoned = len(samples) <= 8 and sum(1 for s in samples if s.get("label") == 0 and _number(s.get("x1", 0)) > 8) >= 5
             return {"target_prediction": "benign" if poisoned else "malicious", "response": flag if poisoned else "Target remains malicious."}
         if challenge_id == "explainability-manipulation":
             f = payload.get("features", {})
-            malicious = float(f.get("risk", 0)) + float(f.get("rate", 0)) >= 10
-            top = "rate" if float(f.get("rate", 0)) > float(f.get("risk", 0)) else "risk"
+            malicious = _number(f.get("risk", 0)) + _number(f.get("rate", 0)) >= 10
+            top = "rate" if _number(f.get("rate", 0)) > _number(f.get("risk", 0)) else "risk"
             success = malicious and payload.get("baseline_top") and payload["baseline_top"] != top
             return {"prediction": "malicious" if malicious else "benign", "top_explanation": top, "response": flag if success else "Explanation calculated."}
         if challenge_id == "soc-incident-correlation":

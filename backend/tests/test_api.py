@@ -220,3 +220,20 @@ def test_wrongly_shaped_challenge_input_returns_client_error(challenge_id, paylo
 
         assert response.status_code == 422
         assert response.json()["detail"] == "Challenge payload contains invalid values"
+
+
+@pytest.mark.parametrize(
+    ("challenge_id", "payload"),
+    [
+        ("soc-false-confidence", {"model_probability": "nan"}),
+        ("adversarial-ids-evasion", {"features": {"packets": "inf"}}),
+        ("explainability-manipulation", {"features": {"risk": "inf", "rate": "-inf"}}),
+        ("model-poisoning", {"samples": [{"label": 0, "x1": "Infinity"}] * 5}),
+    ],
+)
+def test_non_finite_numeric_challenge_input_returns_client_error(challenge_id, payload):
+    with TestClient(app, raise_server_exceptions=False) as client:
+        response = client.post(f"/api/challenges/{challenge_id}/run", json={"payload": payload})
+
+        assert response.status_code == 422
+        assert response.json()["detail"] == "Challenge payload contains invalid values"
